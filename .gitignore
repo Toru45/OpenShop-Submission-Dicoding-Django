@@ -35,7 +35,7 @@ media/
 staticfiles/
 static/
 .env
-.env.*
+.env.
 *.env
 *.secret
 *.bak
