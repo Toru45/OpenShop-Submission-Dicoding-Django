@@ -1,0 +1,207 @@
+openapi: 3.0.3
+info:
+  title: OPENSHOP API  
+  version: "1.0"
+  description: Belajar Back-End Pemula dengan Python
+  contact:
+    name: Faiq Radiansyah
+    email: faiqradiansyah@gmail.com
+
+servers:
+  - url: http://localhost:8000
+
+paths:
+  /products/:
+    get:
+      summary: Mendapatkan daftar produk
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Filter produk berdasarkan nama (opsional)
+        - in: query
+          name: location
+          schema:
+            type: string
+          description: Filter produk berdasarkan lokasi (opsional)
+      responses:
+        '200':
+          description: Daftar produk
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+    post:
+      summary: Menambah produk baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Produk berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /products/{id}/:
+    get:
+      summary: Mendapatkan detail produk
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detail produk
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Produk tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+    put:
+      summary: Memperbarui produk
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Produk berhasil diperbarui
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Data tidak valid
+    delete:
+      summary: Deleting the product (soft delete)
+      description: Produk akan di-soft delete, bukan dihapus secara permanen.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Produk berhasil di-soft delete
+        '404':
+          description: Produk tidak ditemukan
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        sku:
+          type: string
+        description:
+          type: string
+        shop:
+          type: string
+        location:
+          type: string
+        price:
+          type: integer
+        discount:
+          type: integer
+        category:
+          type: string
+        stock:
+          type: integer
+        is_available:
+          type: boolean
+        picture:
+          type: string
+        is_delete:
+          type: boolean
+        _links:
+          type: array
+          items:
+            type: object
+            properties:
+              rel:
+                type: string
+              href:
+                type: string
+              action:
+                type: string
+              types:
+                type: array
+                items:
+                  type: string
+    ProductInput:
+      type: object
+      required:
+        - name
+        - sku
+        - description
+        - shop
+        - location
+        - price
+        - discount
+        - category
+        - stock
+        - is_available
+        - picture
+      properties:
+        name:
+          type: string
+        sku:
+          type: string
+        description:
+          type: string
+        shop:
+          type: string
+        location:
+          type: string
+        price:
+          type: integer
+        discount:
+          type: integer
+        category:
+          type: string
+        stock:
+          type: integer
+        is_available:
+          type: boolean
+        picture:
+          type: string
+        is_delete:
+          type: boolean
