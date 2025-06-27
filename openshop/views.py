@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import ProductSerializer
 from .models import OpenShop
+from django.http import Http404
 
 class ProductList(APIView):
     def post(self, request):
@@ -18,3 +19,14 @@ class ProductList(APIView):
         return Response({
             "products": serializer.data
         }, status=status.HTTP_200_OK)
+
+class ProductDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return OpenShop.objects.get(pk=pk)
+        except OpenShop.DoesNotExist:
+            raise Http404
+    def get(self, request, pk):
+        product = self.get_object(pk)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
